@@ -1,11 +1,19 @@
 ---
 name: socialecho-social-media-management-agent
-description: Call SocialEcho OpenAPI with a Team API Key for team, accounts, OAuth links, articles, reports, uploads, Reddit, Pinterest, TikTok Shop catalog/music, product sync, and cross-platform publishing.
+description: Use SocialEcho OpenAPI for explicit team/account/content queries and user-authorized TikTok Shop sync or cross-platform publishing. Requires a user-provided Team API Key and confirmation before live writes.
 ---
 
 # SocialEcho Social Media Management Agent
 
-Use this skill to call SocialEcho external APIs with a team API key.
+Use this skill to call SocialEcho external APIs with a team API key. Send network requests only to `https://api.socialecho.net`, or to `https://api-dev.socialecho.net` when the user explicitly targets development.
+
+## Authorization boundary
+
+- Accept the Team API Key only when the user explicitly supplies it for this task. Never search environment variables, credential stores, shell history, or files for a key. Never print or persist the key.
+- Team, account, OAuth-link, article, report, upload-URL, Reddit, Pinterest, product, genre, and music-list calls are read or preparation operations. Run only those needed for the user's request.
+- Product sync and article publishing are live writes. Before either write, show the exact target account and relevant payload summary, including content, attachments, settings/privacy, and immediate or scheduled timing. Obtain explicit user authorization for that exact action in the current request.
+- Do not infer write authorization from API access, a previous action, a broad request to manage social media, or an earlier conversation. Never add `--execute` on the user's behalf without current explicit authorization.
+- Dry runs make no network request. Execute a live write only with both `--execute` and a matching `--confirm-account-id`.
 
 ## Prerequisites
 
@@ -14,7 +22,7 @@ Use this skill to call SocialEcho external APIs with a team API key.
 3. In Team Management, create an API key.
 4. Use explicit CLI options for auth/runtime (do not auto-read env vars):
    - `--api-key` (required)
-   - `--base-url` (optional, default `https://api.socialecho.net`)
+   - `--base-url` (optional; only the SocialEcho production or development API host is accepted, default `https://api.socialecho.net`)
    - `--team-id` (optional; maps to `X-Team-Id` when set)
    - `--lang` (optional, default `zh_CN`)
 
@@ -39,23 +47,30 @@ Runtime requirement: Node.js `>=18`
 ./report.js --api-key YOUR_KEY --start-date 2026-01-01 --end-date 2026-03-24 --time-type 1 --group day --account-ids 41,42
 ```
 
-上传与发布相关：
+上传准备与平台查询：
 
 ```bash
 ./upload-url.js --api-key YOUR_KEY --content-type image/png
 # 或: --content_type video/mp4
 ./reddit-communities.js --api-key YOUR_KEY --account-id 163751
 ./pinterest-boards.js --api-key YOUR_KEY --account-id 163751
-./publish-article.js --api-key YOUR_KEY --payload ./publish-payload.example.json
 ./tiktokshop-products.js --api-key YOUR_KEY --account-id 43 --page 1 --per-page 20
-./tiktokshop-product-sync.js --api-key YOUR_KEY --account-id 43 --execute
 ./tiktokshop-music-genres.js --api-key YOUR_KEY
 ./tiktokshop-music-trending.js --api-key YOUR_KEY --account-id 43 --country-code US --genre BGM --date-range 7DAY
 ```
 
+实时写入操作先执行不带认证信息的 dry-run，向用户展示预览；获得当前操作的明确授权后，再使用双重确认参数：
+
+```bash
+./publish-article.js --payload ./publish-payload.example.json
+./publish-article.js --api-key YOUR_KEY --payload ./publish-payload.example.json --execute --confirm-account-id 163751
+./tiktokshop-product-sync.js --account-id 43
+./tiktokshop-product-sync.js --api-key YOUR_KEY --account-id 43 --execute --confirm-account-id 43
+```
+
 `GET /v1/upload/url` 的 QueryString **必须** 包含 `content_type`（与实际上传文件一致的 MIME）。**允许值**为：`image/jpeg`、`image/jpg`、`image/png`、`image/gif`、`image/webp`、`image/bmp`；`video/mp4`、`video/avi`、`video/mov`、`video/wmv`、`video/flv`、`video/webm`、`video/mkv`、`video/3gp`、`video/quicktime`。
 
-`publish-article` 的请求体字段以仓库内 `openapi.json` / `openapi.yaml` 中 `POST /v1/publish/article` 为准；请准备完整 JSON 文件并通过 `--payload` 传入。
+`publish-article` 的请求体字段以仓库内 `openapi.json` / `openapi.yaml` 中 `POST /v1/publish/article` 为准；请准备完整 JSON 文件并通过 `--payload` 传入。Dry-run 只读取指定 payload 文件并输出目标摘要，不读取其他文件，也不调用网络。
 
 选中 TikTok/TikTok Shop 音乐时，`extra.music` 必须完整包含 `url`、`uuid`、`cover`、`title`、`artist`、`duration`、`selection`、`music_volume`、`original_sound_volume` 九个字段。
 

@@ -29,10 +29,24 @@ export function getOption(args, name, required = true, fallback = "") {
   return v;
 }
 
+const allowedApiHosts = new Set(["api.socialecho.net", "api-dev.socialecho.net"]);
+
+function normalizeBaseUrl(raw) {
+  const value = String(raw).replace(/\/+$/, "");
+  const url = new URL(value);
+  if (url.protocol !== "https:" || !allowedApiHosts.has(url.hostname) || url.username || url.password) {
+    throw new Error("--base-url must be https://api.socialecho.net or https://api-dev.socialecho.net");
+  }
+  if (url.pathname !== "/" || url.search || url.hash) {
+    throw new Error("--base-url must not include a path, query, or fragment");
+  }
+  return value;
+}
+
 export function buildRequestOptions(args) {
   return {
     apiKey: getOption(args, "api-key"),
-    baseUrl: getOption(args, "base-url", false, "https://api.socialecho.net").replace(/\/+$/, ""),
+    baseUrl: normalizeBaseUrl(getOption(args, "base-url", false, "https://api.socialecho.net")),
     teamId: getOption(args, "team-id", false, ""),
     lang: getOption(args, "lang", false, "zh_CN")
   };

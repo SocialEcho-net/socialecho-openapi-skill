@@ -1,6 +1,6 @@
 {
   "name": "socialecho-social-media-management-agent",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "type": "module",
   "description": "CLI helpers for SocialEcho social media management external APIs",
   "author": "SocialEcho Team",

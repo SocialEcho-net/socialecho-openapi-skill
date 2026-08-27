@@ -5,7 +5,7 @@ SocialEcho 对外社媒 OpenAPI 的 Skill 与第三方平台适配器。
 ## 当前版本
 
 - Canonical Codex/Agent Skill：`social-media-autopilot/`，版本 `2.1.0`
-- ClawHub/Node 兼容包：仓库根目录与 `socialecho-skills/`，版本 `2.1.0`
+- ClawHub/Node 兼容包：仓库根目录与 `socialecho-skills/`，版本 `2.1.1`（写操作默认 dry-run，执行需双重确认）
 - 轻量旧版兼容包：`socialecho-openapi-skill/`，版本 `1.2.0`
 - Dify Tool Plugin：`socialecho-social-media-management-agent/`，版本 `0.2.0`
 - Zapier CLI Integration：`zapier-socialecho/`，版本 `1.1.0`

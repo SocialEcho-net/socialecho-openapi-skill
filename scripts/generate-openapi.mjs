@@ -17,9 +17,11 @@ const get = (operationId, summary, parameters = []) => ({
   responses: { "200": { $ref: "#/components/responses/Success" } },
   security: [{ bearerAuth: [] }]
 });
-const post = (operationId, summary, schema) => ({
+const post = (operationId, summary, schema, description) => ({
   operationId,
   summary,
+  description,
+  "x-requires-explicit-confirmation": true,
   requestBody: {
     required: true,
     content: { "application/json": { schema } }
@@ -44,8 +46,8 @@ const spec = {
   openapi: "3.0.3",
   info: {
     title: "SocialEcho Social Media OpenAPI",
-    version: "2.1.0",
-    description: "Team API Key integration for SocialEcho. GET parameters use QueryString and GET requests must not include a body. Success requires HTTP 2xx and JSON code 0."
+    version: "2.1.1",
+    description: "Team API Key integration for SocialEcho. Supply credentials explicitly; clients must not discover keys from environment variables, credential stores, or files. GET parameters use QueryString and GET requests must not include a body. Success requires HTTP 2xx and JSON code 0. Live write operations require an immediate user confirmation after reviewing their target and payload."
   },
   servers: [{ url: "https://api.socialecho.net", description: "Production" }],
   paths: {
@@ -87,7 +89,7 @@ const spec = {
       type: "object",
       required: ["account_id"],
       properties: { account_id: { type: "integer", minimum: 1 } }
-    }) },
+    }, "LIVE WRITE: changes the selected TikTok Shop account. Show the exact account ID to the user and obtain explicit confirmation immediately before invoking this operation. Do not infer authorization from an earlier or unrelated request.") },
     "/v1/tiktokshop/music/genres": { get: get("listTikTokShopMusicGenres", "List TikTok commercial music genres", commonHeaders) },
     "/v1/tiktokshop/music/trending": { get: get("listTikTokShopTrendingMusic", "List TikTok commercial trending music", [
       ...commonHeaders,
@@ -96,10 +98,10 @@ const spec = {
       query("genre", { type: "string", maxLength: 80 }),
       query("date_range", { type: "string", enum: ["1DAY", "7DAY", "30DAY", "90DAY"] })
     ]) },
-    "/v1/publish/article": { post: post("publishArticle", "Publish cross-platform article", { $ref: "#/components/schemas/PublishPayload" }) }
+    "/v1/publish/article": { post: post("publishArticle", "Publish cross-platform article", { $ref: "#/components/schemas/PublishPayload" }, "LIVE WRITE: can publish immediately or schedule public content on a connected social account. Before invoking, show the target account, content, attachments, privacy/settings, and schedule to the user and obtain explicit confirmation for that exact payload. Do not infer authorization from an earlier or unrelated request.") }
   },
   components: {
-    securitySchemes: { bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "Team API Key" } },
+    securitySchemes: { bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "Team API Key", description: "Pass the user-provided Team API Key explicitly. Never search environment variables, credential stores, or files for a key, and never print or persist it." } },
     responses: {
       Success: {
         description: "HTTP 2xx with code 0",

@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "SocialEcho Social Media OpenAPI",
-    "version": "2.1.0",
-    "description": "Team API Key integration for SocialEcho. GET parameters use QueryString and GET requests must not include a body. Success requires HTTP 2xx and JSON code 0."
+    "version": "2.1.1",
+    "description": "Team API Key integration for SocialEcho. Supply credentials explicitly; clients must not discover keys from environment variables, credential stores, or files. GET parameters use QueryString and GET requests must not include a body. Success requires HTTP 2xx and JSON code 0. Live write operations require an immediate user confirmation after reviewing their target and payload."
   },
   "servers": [
     {
@@ -559,6 +559,8 @@
       "post": {
         "operationId": "syncTiktokShopProducts",
         "summary": "Submit TikTok Shop product sync",
+        "description": "LIVE WRITE: changes the selected TikTok Shop account. Show the exact account ID to the user and obtain explicit confirmation immediately before invoking this operation. Do not infer authorization from an earlier or unrelated request.",
+        "x-requires-explicit-confirmation": true,
         "requestBody": {
           "required": true,
           "content": {
@@ -718,6 +720,8 @@
       "post": {
         "operationId": "publishArticle",
         "summary": "Publish cross-platform article",
+        "description": "LIVE WRITE: can publish immediately or schedule public content on a connected social account. Before invoking, show the target account, content, attachments, privacy/settings, and schedule to the user and obtain explicit confirmation for that exact payload. Do not infer authorization from an earlier or unrelated request.",
+        "x-requires-explicit-confirmation": true,
         "requestBody": {
           "required": true,
           "content": {
@@ -746,7 +750,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "Team API Key"
+        "bearerFormat": "Team API Key",
+        "description": "Pass the user-provided Team API Key explicitly. Never search environment variables, credential stores, or files for a key, and never print or persist it."
       }
     },
     "responses": {

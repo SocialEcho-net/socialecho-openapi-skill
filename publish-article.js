@@ -4,7 +4,6 @@ import fs from "node:fs";
 import { buildRequestOptions, callJsonPost, getOption, parseArgs, printAndExit } from "./client.js";
 
 const args = parseArgs(process.argv);
-const options = buildRequestOptions(args);
 const payloadPath = getOption(args, "payload");
 
 const selectedMusicFields = [
@@ -51,5 +50,27 @@ try {
   process.exit(2);
 }
 
+const accountId = Number(body?.account_id);
+if (!Number.isInteger(accountId) || accountId < 1) {
+  throw new Error("payload.account_id must be a positive integer");
+}
+
+if (args.execute !== true) {
+  console.log(JSON.stringify({
+    ok: true,
+    dry_run: true,
+    action: "publish_article",
+    preview: body,
+    next: `After explicit user authorization for this exact payload, rerun with --execute --confirm-account-id ${accountId}`
+  }, null, 2));
+  process.exit(0);
+}
+
+const confirmedAccountId = Number(getOption(args, "confirm-account-id"));
+if (confirmedAccountId !== accountId) {
+  throw new Error(`--confirm-account-id must match payload.account_id (${accountId})`);
+}
+
+const options = buildRequestOptions(args);
 const result = await callJsonPost("/v1/publish/article", body, options);
 printAndExit(result);
