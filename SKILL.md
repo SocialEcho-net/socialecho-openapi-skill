@@ -1,6 +1,6 @@
 ---
 name: socialecho-social-media-management-agent
-description: SocialEcho social media management API skill for querying team, accounts, articles, reports, upload URL, Reddit communities, Pinterest boards, and publishing posts using team API key. Use for integration checks and data pulls.
+description: Call SocialEcho OpenAPI with a Team API Key for team, accounts, OAuth links, articles, reports, uploads, Reddit, Pinterest, TikTok Shop catalog/music, product sync, and cross-platform publishing.
 ---
 
 # SocialEcho Social Media Management Agent
@@ -29,11 +29,12 @@ Runtime requirement: Node.js `>=18`
 
 ## Commands
 
-查询与报表（OpenAPI 约定为 **GET + JSON body**，脚本用 Node 原生 `http(s)` 发送）：
+查询接口统一使用 **GET + QueryString**。GET 不得携带 body；CloudFront 会对带 body 的 GET 直接返回 `403`：
 
 ```bash
 ./team.js --api-key YOUR_KEY
 ./account.js --api-key YOUR_KEY --page 1 --type 1
+./oauth-links.js --api-key YOUR_KEY
 ./article.js --api-key YOUR_KEY --page 1 --account-ids 41,42
 ./report.js --api-key YOUR_KEY --start-date 2026-01-01 --end-date 2026-03-24 --time-type 1 --group day --account-ids 41,42
 ```
@@ -45,9 +46,15 @@ Runtime requirement: Node.js `>=18`
 ./reddit-communities.js --api-key YOUR_KEY --account-id 163751
 ./pinterest-boards.js --api-key YOUR_KEY --account-id 163751
 ./publish-article.js --api-key YOUR_KEY --payload ./publish-payload.example.json
+./tiktokshop-products.js --api-key YOUR_KEY --account-id 43 --page 1 --per-page 20
+./tiktokshop-product-sync.js --api-key YOUR_KEY --account-id 43 --execute
+./tiktokshop-music-genres.js --api-key YOUR_KEY
+./tiktokshop-music-trending.js --api-key YOUR_KEY --account-id 43 --country-code US --genre BGM --date-range 7DAY
 ```
 
 `publish-article` 的请求体字段以仓库内 `openapi.json` / `openapi.yaml` 中 `POST /v1/publish/article` 为准；请准备完整 JSON 文件并通过 `--payload` 传入。
+
+选中 TikTok/TikTok Shop 音乐时，`extra.music` 必须完整包含 `url`、`uuid`、`cover`、`title`、`artist`、`duration`、`selection`、`music_volume`、`original_sound_volume` 九个字段。
 
 ## Platform publish limits (copy, media, formats)
 
@@ -70,6 +77,7 @@ node ./platform-limits.js --lang en
 
 ## Notes
 
-- 成功判定：HTTP `200` 且响应 JSON 的 `code` 为 `200` 或 `0`（与当前对外接口约定一致）。
+- 成功判定：HTTP `2xx` 且响应 JSON 的 `code` 为 `0`。
+- GET 参数全部通过 QueryString 传递；数组使用 `account_ids[]=1&account_ids[]=2`。
 - 外部 API 限流：单 Key 建议不超过 **120 次/分钟**；循环调用请加节流与退避。
 - 规范文件：仓库根目录同步的 `默认模块.openapi.json` 与 skill 内 `openapi.json` / `openapi.yaml` 内容一致（便于 Clawhub / GitHub 与 Agent 阅读）。

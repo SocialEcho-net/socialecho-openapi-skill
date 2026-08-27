@@ -1,0 +1,16 @@
+identity:
+  name: sync_tiktokshop_products
+  author: socialecho-net
+  label:
+    en_US: Sync TikTok Shop Products
+    zh_Hans: 同步 TikTok Shop 商品
+description:
+  human:
+    en_US: Submit a product synchronization task for a TikTok Shop account.
+    zh_Hans: 提交 TikTok Shop 商品同步任务。
+  llm: POST /v1/tiktokshop/products/sync. This changes live state.
+parameters:
+  - { name: account_id, type: number, required: true, label: { en_US: Account ID, zh_Hans: 账号 ID }, human_description: { en_US: TikTok Shop account ID., zh_Hans: TikTok Shop 账号 ID。 }, llm_description: Account ID, form: llm }
+extra:
+  python:
+    source: tools/sync_tiktokshop_products.py

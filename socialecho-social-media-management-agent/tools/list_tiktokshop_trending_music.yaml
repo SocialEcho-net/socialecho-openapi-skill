@@ -1,0 +1,19 @@
+identity:
+  name: list_tiktokshop_trending_music
+  author: socialecho-net
+  label:
+    en_US: TikTok Shop Trending Music
+    zh_Hans: TikTok Shop 趋势音乐
+description:
+  human:
+    en_US: Query current TikTok commercial trending music.
+    zh_Hans: 查询当前 TikTok 商业趋势音乐。
+  llm: GET /v1/tiktokshop/music/trending using QueryString.
+parameters:
+  - { name: account_id, type: number, required: true, label: { en_US: Account ID, zh_Hans: 账号 ID }, human_description: { en_US: TikTok Shop account ID., zh_Hans: TikTok Shop 账号 ID。 }, llm_description: Account ID, form: llm }
+  - { name: country_code, type: string, required: false, label: { en_US: Country Code, zh_Hans: 国家代码 }, human_description: { en_US: Two-letter code., zh_Hans: 两位国家代码。 }, llm_description: Example US, form: llm }
+  - { name: genre, type: string, required: false, label: { en_US: Genre, zh_Hans: 分类 }, human_description: { en_US: Genre returned by the genres tool., zh_Hans: 音乐分类接口返回值。 }, llm_description: Example BGM, form: llm }
+  - { name: date_range, type: string, required: false, label: { en_US: Date Range, zh_Hans: 时间范围 }, human_description: { en_US: 1DAY, 7DAY, 30DAY, or 90DAY., zh_Hans: 1DAY、7DAY、30DAY 或 90DAY。 }, llm_description: Example 7DAY, form: llm }
+extra:
+  python:
+    source: tools/list_tiktokshop_trending_music.py

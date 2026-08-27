@@ -9,7 +9,7 @@ description:
     en_US: List Subreddits/communities for a connected Reddit account before publishing.
     zh_Hans: 在发布 Reddit 内容前，根据已绑定的社媒账号查询可选社区/子版块。
   llm: >-
-    GET /v1/reddit/communities with JSON body {"account_id": <int>}. Requires SocialEcho account_id for Reddit.
+    GET /v1/reddit/communities with QueryString account_id. Requires a SocialEcho Reddit account ID.
     发布 Reddit 前选社区；传入社媒 account_id（整数）。
 parameters:
   - name: account_id

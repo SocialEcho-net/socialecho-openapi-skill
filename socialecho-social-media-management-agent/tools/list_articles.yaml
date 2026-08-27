@@ -9,7 +9,7 @@ description:
     en_US: Query SocialEcho article list by page and account IDs.
     zh_Hans: 按页查询贴文；可限定一个或多个社媒 account_id（逗号分隔，接口中转为整型数组）。
   llm: >-
-    Query article list. Optional account_ids as CSV (e.g. 163956,163955,28); API sends integer array in JSON body.
+    Query article list. Optional account_ids as CSV; API sends bracketed QueryString array parameters.
     贴文列表；account_ids 逗号分隔，API 内为整型数组。
 parameters:
   - name: page

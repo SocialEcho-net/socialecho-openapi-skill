@@ -9,7 +9,7 @@ description:
     en_US: List Pinterest boards for a connected account to pick a board (category) when publishing.
     zh_Hans: 发布 Pinterest 前，根据已绑定账号拉取图版（board）列表，用于选择图版/分类 ID。
   llm: >-
-    GET /v1/pinterest/boards with JSON body {"account_id": <int>}. Used before publishing Pins.
+    GET /v1/pinterest/boards with QueryString account_id. Used before publishing Pins.
     发布 Pin 前选图版；传社媒 account_id。
 parameters:
   - name: account_id

@@ -1,0 +1,4 @@
+interface:
+  display_name: "SocialEcho OpenAPI"
+  short_description: "Query and automate SocialEcho OpenAPI workflows"
+  default_prompt: "Use $social-media-autopilot to query SocialEcho, preserve complete TikTok music objects, and publish safely."

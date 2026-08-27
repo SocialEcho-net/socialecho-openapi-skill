@@ -7,10 +7,9 @@ identity:
   description:
     en_US: >-
       SocialEcho API tools: team, accounts, posts, reports, OSS presign, Reddit communities, Pinterest boards, and
-      cross-platform publish (GET+JSON for GET routes; POST /v1/publish/article for publish).
+      TikTok Shop catalog/music, product sync, and cross-platform publish. GET parameters use QueryString.
     zh_Hans: >-
-      SocialEcho 开放 API：团队、账号、贴文、报表、OSS 上传、Reddit 社区、Pinterest 图版、跨平台发布等；GET 为 JSON
-      请求体，发布为 POST /v1/publish/article。
+      SocialEcho 开放 API：团队、账号、OAuth、贴文、报表、OSS、Reddit、Pinterest、TikTok Shop 与跨平台发布；GET 参数使用 QueryString。
   icon: icon.svg
 
 credentials_for_provider:
@@ -42,12 +41,17 @@ credentials_for_provider:
 tools:
   - tools/get_team_info.yaml
   - tools/list_accounts.yaml
+  - tools/get_oauth_links.yaml
   - tools/list_articles.yaml
   - tools/get_report.yaml
   - tools/get_upload_url.yaml
   - tools/list_reddit_communities.yaml
   - tools/list_pinterest_boards.yaml
   - tools/publish_article.yaml
+  - tools/list_tiktokshop_products.yaml
+  - tools/sync_tiktokshop_products.yaml
+  - tools/list_tiktokshop_music_genres.yaml
+  - tools/list_tiktokshop_trending_music.yaml
 
 extra:
   python:

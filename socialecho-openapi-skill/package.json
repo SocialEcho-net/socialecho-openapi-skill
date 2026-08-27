@@ -1,8 +1,8 @@
 {
   "name": "social-media-autopilot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
-  "description": "CLI helpers for SocialEcho OpenAPI (GET+JSON body, team/account/article/report/upload presign)",
+  "description": "CLI helpers for SocialEcho OpenAPI (GET QueryString, team/account/article/report/upload presign)",
   "author": "SocialEcho Team",
   "license": "MIT",
   "scripts": {

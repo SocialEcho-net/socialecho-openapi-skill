@@ -1,4 +1,4 @@
-version: 0.1.4
+version: 0.2.0
 type: plugin
 author: socialecho-net
 name: socialecho-social-media-management-agent
@@ -8,9 +8,9 @@ label:
 description:
   en_US: >-
     SocialEcho public API toolset: team, accounts, posts, reports, OSS presign, Reddit & Pinterest list endpoints, and
-    cross-platform publish. GET+JSON for GET routes; content_type for upload. For Dify agents and workflows.
+    cross-platform publish. GET parameters use QueryString; selected music requires all nine fields.
   zh_Hans: >-
-    对接 SocialEcho 开放 API：团队、社媒账号、贴文、报表、OSS 上传、Reddit 社区、Pinterest 图版、跨平台发布等（GET+JSON、上传需 content_type）。适用于 Dify 工作流与 Agent。
+    对接 SocialEcho 开放 API：团队、账号、OAuth、贴文、报表、OSS、Reddit、Pinterest、TikTok Shop 与跨平台发布；GET 使用 QueryString。
 icon: icon.svg
 icon_dark: icon-dark.svg
 resource:
@@ -22,7 +22,7 @@ plugins:
   tools:
     - provider/socialecho-social-media-management-agent.yaml
 meta:
-  version: 0.1.4
+  version: 0.2.0
   arch:
     - amd64
     - arm64

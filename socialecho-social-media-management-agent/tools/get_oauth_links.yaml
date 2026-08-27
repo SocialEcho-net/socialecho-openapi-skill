@@ -1,0 +1,15 @@
+identity:
+  name: get_oauth_links
+  author: socialecho-net
+  label:
+    en_US: Get OAuth Links
+    zh_Hans: 获取授权链接
+description:
+  human:
+    en_US: Get platform authorization links for the current team.
+    zh_Hans: 获取当前团队的全部平台授权链接。
+  llm: GET /v1/oauth/links with no parameters.
+parameters: []
+extra:
+  python:
+    source: tools/get_oauth_links.py

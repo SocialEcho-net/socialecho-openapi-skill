@@ -2,7 +2,7 @@
 name: socialecho-openapi
 description: >-
   Call the SocialEcho external API (app.socialecho.net) with a Team API key: team, accounts, articles, reports, and OSS presign
-  (GET /v1/upload/url with required content_type MIME from the documented image/video allowlist). Use for integration checks,
+  (GET /v1/upload/url with required content_type QueryString parameter). Use for integration checks,
   automation, and n8n/Dify-style data pulls. Aligns with the project’s socialEchoApidocs_cn.md / v1.1.0 OpenAPI.
 ---
 
@@ -24,15 +24,15 @@ description: >-
 
 ## 传输与成功判定（必读）
 
-- **GET + JSON Body**：多数业务接口在 OpenAPI/当前线上约定为 `GET`，参数放在 `Content-Type: application/json` 的**请求体**中，**不要**用 QueryString 传业务参数（与浏览器对 GET+body 的限制不同；`curl` / Node `fetch` / 后端客户端均可）。  
-- **成功**：`HTTP 200` 且响应 JSON 的 `code` 为 **200 或 0**（以线上为准，二者都视为成功）。其他情况作失败并记录 `message` / 业务码。  
+- **GET + QueryString**：所有 GET 参数放在 QueryString 中，GET 请求不得携带 body。CloudFront 会对带 body 的 GET 直接返回 `403`。数组使用 `account_ids[]=1&account_ids[]=2`。
+- **成功**：`HTTP 2xx` 且响应 JSON 的 `code` 为 **0**。其他情况作失败并记录 `message`、`request_id` 与业务码。
 - **限流**：单 Key 约 **120 次/分钟**；批处理请加节流与 **429 指数退避**（如 1s / 2s / 4s）。
 
 ## 获取 OSS 上传地址：`GET /v1/upload/url`
 
 发布类流程建议 **先取上传地址 → 上传文件 → 将返回的文件 URL 填入发布接口的 `attachments`**（见长文档 **5.5、5.8 节**）。
 
-- **Body 必填** `content_type`（`string`）：**与实际上传文件一致的** MIME 类型。  
+- **QueryString 必填** `content_type`（`string`）：**与实际上传文件一致的** MIME 类型。
 - **仅允许**下列枚举（与 `socialEchoApidocs_cn.md` 第 5.5 节一致；脚本 `upload.js` 中亦有同名常量 `CONTENT_TYPE_ENUM` 校验）：
 
 | 图片 | 视频 |
@@ -69,7 +69,7 @@ node ./upload.js --api-key YOUR_KEY --content-type video/mp4
 
 ## 与旧版实现的差异
 
-- 本技能包内 `client.js` 的 `callApi` 已按文档改为 **GET + `JSON.stringify(body)`**，**不再**把业务参数放在 URL query 中。若你自有脚本仍用 query 版，请按 `socialEchoApidocs_cn.md` 的 curl 示例迁移。  
+- `1.2.0` 起所有 GET 请求改为无 body 的 QueryString 传输，兼容 CloudFront；旧版 `GET + JSON body` 客户端必须升级。
 - 退出码：子命令在**业务失败**（`code` 非 200/0 等）时 `process.exit(1)` 并打印完整 `body` JSON。
 
 ## 调试用环境

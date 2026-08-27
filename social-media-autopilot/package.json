@@ -1,0 +1,18 @@
+{
+  "name": "social-media-autopilot",
+  "version": "2.1.0",
+  "type": "module",
+  "description": "CLI helpers for Social media autopilot external APIs",
+  "author": "SocialEcho Team",
+  "license": "MIT",
+  "scripts": {
+    "socialecho": "node ./socialecho.js",
+    "team": "node ./team.js",
+    "account": "node ./account.js",
+    "article": "node ./article.js",
+    "report": "node ./report.js",
+    "music-genres": "node ./socialecho.js tiktokshop-music-genres",
+    "music-trending": "node ./socialecho.js tiktokshop-music-trending"
+  },
+  "dependencies": {}
+}

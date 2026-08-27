@@ -34,27 +34,34 @@ export function buildRequestOptions(args) {
   };
 }
 
-/**
- * SocialEcho 外部 API：多数为 GET，业务参数放在 JSON body（非 QueryString）。
- * @param {string} path 如 `/v1/team`
- * @param {Record<string, unknown>} body 请求体对象；无参数时传 `{}`
- */
-export async function callApi(path, body = {}, options) {
+function appendQueryParams(urlString, params = {}) {
+  const url = new URL(urlString);
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === "") continue;
+    if (Array.isArray(value)) {
+      for (const item of value) url.searchParams.append(`${key}[]`, String(item));
+    } else {
+      url.searchParams.set(key, String(value));
+    }
+  }
+  return url.toString();
+}
+
+/** SocialEcho GET 参数使用 QueryString，且请求不得携带 body。 */
+export async function callApi(path, params = {}, options) {
   const { apiKey, baseUrl, teamId, lang } = options;
 
-  const url = `${baseUrl}${path}`;
+  const url = appendQueryParams(`${baseUrl.replace(/\/+$/, "")}${path}`, params);
 
   const headers = {
     Authorization: `Bearer ${apiKey}`,
-    "Content-Type": "application/json",
     "X-Lang": lang
   };
   if (teamId) headers["X-Team-Id"] = teamId;
 
   const resp = await fetch(url, {
     method: "GET",
-    headers,
-    body: JSON.stringify(body)
+    headers
   });
   const status = resp.status;
   let resBody;
@@ -64,8 +71,7 @@ export async function callApi(path, body = {}, options) {
     resBody = { parse_error: true };
   }
 
-  const ok =
-    status === 200 && (resBody?.code === 200 || resBody?.code === 0);
+  const ok = status >= 200 && status <= 299 && resBody?.code === 0;
   return { ok, status, body: resBody, url };
 }
 

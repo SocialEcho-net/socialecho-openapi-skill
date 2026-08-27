@@ -1,0 +1,15 @@
+identity:
+  name: list_tiktokshop_music_genres
+  author: socialecho-net
+  label:
+    en_US: TikTok Shop Music Genres
+    zh_Hans: TikTok Shop 音乐分类
+description:
+  human:
+    en_US: List current TikTok commercial music genres.
+    zh_Hans: 获取当前 TikTok 商业音乐分类。
+  llm: GET /v1/tiktokshop/music/genres with no parameters.
+parameters: []
+extra:
+  python:
+    source: tools/list_tiktokshop_music_genres.py

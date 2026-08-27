@@ -13,7 +13,7 @@ description:
       获取文件上传 OSS 的地址。body 必传 content_type，且与实际上传文件类型一致。上传后把文件 URL
       用于发布接口的 attachments 等（见帮助中心 / OpenAPI）。
   llm: >-
-    GET /v1/upload/url with JSON body { "content_type": "<MIME>" }.
+    GET /v1/upload/url with QueryString parameter content_type=<MIME>.
     Allowed image MIME: image/jpeg, image/jpg, image/png, image/gif, image/webp, image/bmp.
     Allowed video MIME: video/mp4, video/avi, video/mov, video/wmv, video/flv, video/webm, video/mkv, video/3gp, video/quicktime.
     必填 content_type 白名单如上；与实际上传文件一致。中文说明同左。

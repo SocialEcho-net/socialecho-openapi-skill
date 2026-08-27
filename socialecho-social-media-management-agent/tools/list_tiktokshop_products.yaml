@@ -1,0 +1,19 @@
+identity:
+  name: list_tiktokshop_products
+  author: socialecho-net
+  label:
+    en_US: List TikTok Shop Products
+    zh_Hans: TikTok Shop 商品列表
+description:
+  human:
+    en_US: List publishable products for a TikTok Shop account.
+    zh_Hans: 获取 TikTok Shop 账号可发布的商品。
+  llm: GET /v1/tiktokshop/products using QueryString.
+parameters:
+  - { name: account_id, type: number, required: true, label: { en_US: Account ID, zh_Hans: 账号 ID }, human_description: { en_US: TikTok Shop account ID., zh_Hans: TikTok Shop 账号 ID。 }, llm_description: Account ID, form: llm }
+  - { name: page, type: number, required: false, label: { en_US: Page, zh_Hans: 页码 }, human_description: { en_US: Page number., zh_Hans: 页码。 }, llm_description: Default 1, form: llm }
+  - { name: per_page, type: number, required: false, label: { en_US: Per Page, zh_Hans: 每页数量 }, human_description: { en_US: 1 to 100., zh_Hans: 1 到 100。 }, llm_description: Default 20, form: llm }
+  - { name: keyword, type: string, required: false, label: { en_US: Keyword, zh_Hans: 关键词 }, human_description: { en_US: Optional product keyword., zh_Hans: 可选商品关键词。 }, llm_description: Optional, form: llm }
+extra:
+  python:
+    source: tools/list_tiktokshop_products.py
